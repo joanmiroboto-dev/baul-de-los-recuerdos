@@ -1,0 +1,16 @@
+project_id = "cvqngjlbouvcszsnzbig"
+
+[functions.upload-to-drive]
+verify_jwt = true
+
+[functions.admin-users]
+verify_jwt = false
+
+[functions.google-auth]
+verify_jwt = true
+
+[functions.google-callback]
+verify_jwt = false
+
+[functions.audio-proxy]
+verify_jwt = false
