@@ -88,41 +88,30 @@ export default function UploadMemory() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("No estás autenticado");
 
-      // 1. Subir a Hostinger
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", import.meta.env.VITE_HOSTINGER_API_KEY || "familia-galletas-123");
+      // 1. Subir a Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-      const uploadUrl = import.meta.env.VITE_HOSTINGER_UPLOAD_URL || "https://tu-hostinger.com/api/hostinger_upload.php";
-      
-      let uploadResult;
-      
-      // [MODO SIMULADOR DE MENTIRA] Si no cambió el link en .env, fingimos que funciona
-      if (uploadUrl.includes("tu-sitio-en-hostinger.com") || uploadUrl.includes("tu-hostinger.com")) {
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulamos que tarda 1.5s en subir
-        uploadResult = {
-          file_url: "https://images.unsplash.com/photo-1590082871864-1065ceb1e2ca?w=800&q=80", // Foto vintage de prueba
-        };
-      } else {
-        // [MODO REAL] Esta es la llamada de verdad a Hostinger
-        const response = await fetch(uploadUrl, {
-          method: "POST",
-          body: formData,
-        });
+      const { error: uploadError } = await supabase.storage
+        .from('memories')
+        .upload(fileName, file);
 
-        uploadResult = await response.json();
-
-        if (!response.ok) {
-          throw new Error(uploadResult.error || "Error al subir el archivo a Hostinger");
-        }
+      if (uploadError) {
+        throw new Error(`Error al subir el archivo: ${uploadError.message}`);
       }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('memories')
+        .getPublicUrl(fileName);
+
+      const file_url = publicUrl;
 
       // 2. Guardar en Supabase
       const { data: memory, error: insertError } = await supabase.from('memories').insert({
         title: title.trim(),
         description: description.trim() || null,
-        file_url: uploadResult.file_url,
-        thumbnail_url: uploadResult.file_url,
+        file_url: file_url,
+        thumbnail_url: file_url,
         memory_date: memoryDate,
         memory_type: getMemoryType(file),
         unlock_date: unlockDate ? new Date(unlockDate).toISOString() : null,
