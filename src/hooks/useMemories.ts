@@ -46,18 +46,22 @@ export const useMemories = ({
     queryKey: ['memories', searchQuery, tagIds, sortAscending],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
+      // Construimos el string de selección dependiendo de si hay filtro
+      const selectQuery = tagIds.length > 0 
+        ? `*, memory_tags!inner(tag_id, tags(*))`
+        : `*, memory_tags!left(tag_id, tags(*))`;
+
       // Construimos la consulta base
       let query = supabase
         .from('memories')
-        .select(`
-          *,
-          memory_tags!left (
-            tag_id,
-            tags (*)
-          )
-        `)
+        .select(selectQuery)
         .order('memory_date', { ascending: sortAscending })
         .range(pageParam * pageSize, (pageParam + 1) * pageSize - 1);
+
+      // Si hay etiquetas seleccionadas, filtramos a nivel de base de datos
+      if (tagIds.length > 0) {
+        query = query.in('memory_tags.tag_id', tagIds);
+      }
 
       // Búsqueda por texto en título o descripción
       if (searchQuery) {
@@ -72,13 +76,6 @@ export const useMemories = ({
         ...memory,
         tags: memory.memory_tags?.map((mt: MemoryTagsRelation) => mt.tags).filter(Boolean) || [],
       })) as MemoryWithTags[];
-
-      // Filtrado de etiquetas en cliente
-      if (tagIds.length > 0) {
-        memories = memories.filter(memory => 
-          memory.tags.some((tag: Tag) => tagIds.includes(tag.id))
-        );
-      }
 
       return memories;
     },
