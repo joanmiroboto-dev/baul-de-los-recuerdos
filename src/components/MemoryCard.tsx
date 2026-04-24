@@ -149,7 +149,9 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, variant, classNa
           <img 
             src={memory.thumbnail_url} 
             alt={memory.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 sepia-[.35] contrast-[1.15] brightness-[0.85] saturate-[.80]"
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 sepia-[.35] contrast-[1.15] brightness-[0.85] saturate-[.80] select-none pointer-events-none"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">

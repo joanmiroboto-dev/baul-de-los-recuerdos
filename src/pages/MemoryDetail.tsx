@@ -399,13 +399,17 @@ const MemoryDetail: React.FC = () => {
               <img
                 src={memory.file_url}
                 alt={memory.title}
-                className="w-full max-h-[70vh] object-contain bg-muted"
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
+                className="w-full max-h-[70vh] object-contain bg-muted select-none"
               />
             )}
             {memory.memory_type === 'video' && (
               <video
                 src={memory.file_url}
                 controls
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
                 className="w-full max-h-[70vh]"
                 poster={memory.thumbnail_url || undefined}
               >
