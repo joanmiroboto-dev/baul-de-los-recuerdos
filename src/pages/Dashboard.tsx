@@ -27,27 +27,27 @@ const Dashboard: React.FC = () => {
 
   const quickAccessItems = [
     {
-      icon: Clock,
+      iconUrl: '/assets/icons/timeline.png',
       label: 'Ver Historia',
       description: 'Línea del tiempo',
       path: '/timeline',
-      color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+      color: 'bg-amber-900/10 text-amber-700',
       borderColor: 'hover:border-amber-300',
     },
     {
-      icon: Images,
+      iconUrl: '/assets/icons/gallery.png',
       label: 'Álbumes',
       description: 'Galería de fotos',
       path: '/gallery',
-      color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400',
+      color: 'bg-rose-900/10 text-rose-700',
       borderColor: 'hover:border-rose-300',
     },
     {
-      icon: Users,
+      iconUrl: '/assets/icons/people.png',
       label: 'Personas',
       description: 'Familiares',
       path: '/gallery?filter=people',
-      color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
+      color: 'bg-teal-900/10 text-teal-700',
       borderColor: 'hover:border-teal-300',
     },
   ];
@@ -60,25 +60,25 @@ const Dashboard: React.FC = () => {
         return {
           title: 'Superadmin',
           description: 'Tienes control total. Puedes añadir, editar y eliminar cualquier recuerdo o comentario.',
-          icon: '⚡',
+          iconUrl: '/assets/icons/superadmin.png',
         };
       case 'admin':
         return {
           title: 'Administrador',
           description: 'Tienes acceso completo. Puedes añadir recuerdos, invitar familiares y gestionar todo.',
-          icon: '👑',
+          iconUrl: '/assets/icons/admin.png',
         };
       case 'editor':
         return {
           title: 'Editor',
           description: 'Puedes ver todos los recuerdos y añadir nuevos. ¡Comparte momentos especiales!',
-          icon: '✏️',
+          iconUrl: '/assets/icons/editor.png',
         };
       case 'viewer':
         return {
           title: 'Visitante',
           description: 'Puedes ver todos los recuerdos y dejar comentarios de voz. ¡Disfruta recordando!',
-          icon: '👀',
+          iconUrl: '/assets/icons/viewer.png',
         };
       default:
         return null;
@@ -100,13 +100,14 @@ const Dashboard: React.FC = () => {
         <div className="max-w-4xl mx-auto relative">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-5">
-              {/* Logo/Avatar mejorado */}
+              {/* Logo/Avatar mejorado con el nuevo icono premium */}
               <div className="relative">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg">
-                  <BookOpen className="w-10 h-10 text-white" strokeWidth={1.5} />
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-card border-2 border-border flex items-center justify-center text-lg">
-                  🍪
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg overflow-hidden border-2 border-amber-200/20">
+                  <img 
+                    src="/favicon.png" 
+                    alt="Caja de Galletas" 
+                    className="w-full h-full object-cover scale-110" 
+                  />
                 </div>
               </div>
               <div>
@@ -176,10 +177,10 @@ const Dashboard: React.FC = () => {
                 >
                   <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                     <div className={cn(
-                      "w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                      "w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 overflow-hidden shadow-inner",
                       item.color
                     )}>
-                      <item.icon className="w-8 h-8" strokeWidth={1.5} />
+                      <img src={item.iconUrl} alt={item.label} className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <span className="text-xl font-serif text-foreground block">
@@ -229,7 +230,9 @@ const Dashboard: React.FC = () => {
                 
                 <CardContent className="p-8 relative">
                   <div className="flex items-start gap-4">
-                    <div className="text-4xl">{roleInfo.icon}</div>
+                    <div className="w-16 h-16 rounded-xl overflow-hidden shadow-lg border border-amber-200/20">
+                      <img src={roleInfo.iconUrl} alt={roleInfo.title} className="w-full h-full object-cover" />
+                    </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-serif text-primary mb-2 flex items-center gap-2">
                         <Heart className="w-5 h-5 text-rose-500" />

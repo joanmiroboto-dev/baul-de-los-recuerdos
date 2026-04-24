@@ -72,7 +72,7 @@ const Login: React.FC = () => {
         {/* Logo/Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border-4 border-accent shadow-gold mb-6 overflow-hidden bg-muted">
-            <img alt="Caja de Galletas" className="w-24 h-24 object-contain" src="/lovable-uploads/9b89a977-03d4-4b4a-a3ab-303290191641.png" />
+            <img alt="Caja de Galletas" className="w-full h-full object-cover" src="/favicon.png" />
           </div>
           <h1 className="text-4xl md:text-5xl text-primary mb-3 font-serif">
             Mi Caja de Galletas

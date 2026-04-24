@@ -502,25 +502,25 @@ const Admin: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="viewer">
                     <div className="flex items-center gap-2">
-                      <span>👀</span>
+                      <img src="/assets/icons/viewer.png" alt="Viewer" className="w-5 h-5 rounded-sm object-cover" />
                       <span>Visitante - Solo ver y comentar</span>
                     </div>
                   </SelectItem>
                   <SelectItem value="editor">
                     <div className="flex items-center gap-2">
-                      <span>✏️</span>
+                      <img src="/assets/icons/editor.png" alt="Editor" className="w-5 h-5 rounded-sm object-cover" />
                       <span>Editor - Puede añadir recuerdos</span>
                     </div>
                   </SelectItem>
                   <SelectItem value="admin">
                     <div className="flex items-center gap-2">
-                      <span>👑</span>
+                      <img src="/assets/icons/admin.png" alt="Admin" className="w-5 h-5 rounded-sm object-cover" />
                       <span>Admin - Control total familiar</span>
                     </div>
                   </SelectItem>
                   <SelectItem value="superadmin">
                     <div className="flex items-center gap-2">
-                      <span>⚡</span>
+                      <img src="/assets/icons/superadmin.png" alt="Superadmin" className="w-5 h-5 rounded-sm object-cover" />
                       <span>Superadmin - Puede borrar recuerdos</span>
                     </div>
                   </SelectItem>

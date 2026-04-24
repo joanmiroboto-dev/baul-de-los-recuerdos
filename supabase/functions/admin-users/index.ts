@@ -50,7 +50,7 @@ serve(async (req) => {
       .eq('user_id', user.id)
       .single();
 
-    if (roleError || roleData?.role !== 'admin') {
+    if (roleError || !['admin', 'superadmin'].includes(roleData?.role)) {
       console.error('User is not admin:', user.id, roleData);
       return new Response(
         JSON.stringify({ error: 'Solo administradores pueden realizar esta acción' }),

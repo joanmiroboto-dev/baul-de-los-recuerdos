@@ -46,24 +46,27 @@ export const useMemories = ({
     queryKey: ['memories', searchQuery, tagIds, sortAscending],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
-      // Construimos el string de selección dependiendo de si hay filtro
-      const selectQuery = tagIds.length > 0 
-        ? `*, memory_tags!inner(tag_id, tags(*))`
-        : `*, memory_tags!left(tag_id, tags(*))`;
+      // Si hay etiquetas, usamos la función RPC para filtro estricto (AND)
+      if (tagIds.length > 0) {
+        const { data, error } = await supabase.rpc('get_memories_with_tags_strict', {
+          search_query: searchQuery,
+          filter_tag_ids: tagIds,
+          sort_ascending: sortAscending,
+          page_size: pageSize,
+          page_offset: pageParam * pageSize
+        });
 
-      // Construimos la consulta base
+        if (error) throw error;
+        return (data || []) as MemoryWithTags[];
+      }
+
+      // Si no hay etiquetas, usamos la consulta normal (más eficiente para casos simples)
       let query = supabase
         .from('memories')
-        .select(selectQuery)
+        .select(`*, memory_tags(tag_id, tags(*))`)
         .order('memory_date', { ascending: sortAscending })
         .range(pageParam * pageSize, (pageParam + 1) * pageSize - 1);
 
-      // Si hay etiquetas seleccionadas, filtramos a nivel de base de datos
-      if (tagIds.length > 0) {
-        query = query.in('memory_tags.tag_id', tagIds);
-      }
-
-      // Búsqueda por texto en título o descripción
       if (searchQuery) {
         query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
       }
@@ -71,16 +74,12 @@ export const useMemories = ({
       const { data, error } = await query;
       if (error) throw error;
 
-      // Transformamos los datos
-      let memories = (data || []).map((memory: MemoryRow) => ({
+      return (data || []).map((memory: any) => ({
         ...memory,
-        tags: memory.memory_tags?.map((mt: MemoryTagsRelation) => mt.tags).filter(Boolean) || [],
+        tags: memory.memory_tags?.map((mt: any) => mt.tags).filter(Boolean) || [],
       })) as MemoryWithTags[];
-
-      return memories;
     },
     getNextPageParam: (lastPage, allPages) => {
-      // Si recibimos menos resultados que el tamaño de página, no hay más páginas
       return lastPage.length === pageSize ? allPages.length : undefined;
     },
   });
