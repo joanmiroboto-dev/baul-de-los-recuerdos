@@ -27,14 +27,16 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, variant, classNa
     }
   };
 
-  const getMemoryTypeBadge = () => {
+  const getMemoryTypeText = () => {
     switch (memory.memory_type) {
       case 'video':
-        return <Badge variant="secondary" className="absolute top-2 right-2">Video</Badge>;
+        return ' [Vídeo]';
       case 'pdf':
-        return <Badge variant="secondary" className="absolute top-2 right-2">PDF</Badge>;
+        return ' [Documento]';
+      case 'audio':
+        return ' [Audio]';
       default:
-        return null;
+        return ' [Fotografía]';
     }
   };
 
@@ -83,7 +85,12 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, variant, classNa
         </div>
         <div className="flex-1 min-w-0">
           <h3 className={cn("font-serif text-lg truncate", isLocked ? "text-primary/60 italic" : "text-primary")}>
-            {isLocked ? "Recuerdo Protegido" : memory.title}
+            {isLocked ? "Recuerdo Protegido" : (
+              <>
+                {memory.title}
+                <span className="text-sm font-sans font-normal text-muted-foreground">{getMemoryTypeText()}</span>
+              </>
+            )}
           </h3>
           <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
             <Calendar className="w-4 h-4" />
@@ -149,11 +156,15 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, variant, classNa
             {getMemoryTypeIcon()}
           </div>
         )}
-        {!isLocked && getMemoryTypeBadge()}
       </div>
       <CardContent className="p-4">
         <h3 className={cn("font-serif text-lg truncate", isLocked ? "text-primary/60 italic text-center" : "text-primary")}>
-          {isLocked ? "Misterio a futuro..." : memory.title}
+          {isLocked ? "Misterio a futuro..." : (
+            <>
+              {memory.title}
+              <span className="text-sm font-sans font-normal text-muted-foreground">{getMemoryTypeText()}</span>
+            </>
+          )}
         </h3>
         {!isLocked && (
           <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">

@@ -264,12 +264,12 @@ const MemoryDetail: React.FC = () => {
 
   const canEditMemory = () => {
     if (!user || !memory) return false;
-    return userRole === 'admin' || userRole === 'editor' || memory.uploaded_by === user.id;
+    return userRole === 'superadmin' || userRole === 'admin' || userRole === 'editor' || memory.uploaded_by === user.id;
   };
 
   const canEditComment = (comment: CommentWithProfile) => {
     if (!user) return false;
-    return userRole === 'admin' || comment.author_id === user.id;
+    return userRole === 'superadmin' || userRole === 'admin' || comment.author_id === user.id;
   };
 
   const handleMemorySaved = (updatedMemory: Memory, newTagIds: string[]) => {
@@ -621,7 +621,7 @@ const MemoryDetail: React.FC = () => {
           open={editMemoryOpen}
           onOpenChange={setEditMemoryOpen}
           onSave={handleMemorySaved}
-          isAdmin={userRole === 'admin'}
+          canDelete={userRole === 'superadmin'}
           onDelete={handleMemoryDeleted}
         />
       )}

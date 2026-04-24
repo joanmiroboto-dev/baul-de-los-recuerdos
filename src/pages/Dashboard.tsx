@@ -52,10 +52,16 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const canEdit = userRole === 'admin' || userRole === 'editor';
+  const canEdit = userRole === 'superadmin' || userRole === 'admin' || userRole === 'editor';
 
   const getRoleInfo = () => {
     switch (userRole) {
+      case 'superadmin':
+        return {
+          title: 'Superadmin',
+          description: 'Tienes control total. Puedes añadir, editar y eliminar cualquier recuerdo o comentario.',
+          icon: '⚡',
+        };
       case 'admin':
         return {
           title: 'Administrador',
@@ -115,7 +121,7 @@ const Dashboard: React.FC = () => {
             </div>
             
             <div className="flex items-center gap-2">
-              {userRole === 'admin' && (
+              {(userRole === 'admin' || userRole === 'superadmin') && (
                 <Button
                   variant="ghost"
                   size="icon"

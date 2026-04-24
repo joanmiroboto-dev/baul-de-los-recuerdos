@@ -49,7 +49,7 @@ interface User {
   email: string;
   displayName: string;
   avatarUrl?: string;
-  role: 'admin' | 'editor' | 'viewer' | null;
+  role: 'superadmin' | 'admin' | 'editor' | 'viewer' | null;
   createdAt: string;
 }
 
@@ -67,7 +67,7 @@ const createUserSchema = z.object({
   email: z.string().trim().email({ message: 'Email inválido' }),
   displayName: z.string().trim().min(1, { message: 'Nombre requerido' }).max(100),
   password: z.string().min(8, { message: 'Mínimo 8 caracteres' }),
-  role: z.enum(['admin', 'editor', 'viewer']),
+  role: z.enum(['superadmin', 'admin', 'editor', 'viewer']),
 });
 
 const Admin: React.FC = () => {
@@ -85,14 +85,14 @@ const Admin: React.FC = () => {
     email: '',
     displayName: '',
     password: '',
-    role: 'viewer' as 'admin' | 'editor' | 'viewer',
+    role: 'viewer' as 'superadmin' | 'admin' | 'editor' | 'viewer',
   });
   const [createErrors, setCreateErrors] = useState<Record<string, string>>({});
 
   // Edit role dialog
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [newRole, setNewRole] = useState<'admin' | 'editor' | 'viewer'>('viewer');
+  const [newRole, setNewRole] = useState<'superadmin' | 'admin' | 'editor' | 'viewer'>('viewer');
 
   // Delete confirmation dialog
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -249,6 +249,7 @@ const Admin: React.FC = () => {
 
   const getRoleBadgeVariant = (role: string | null) => {
     switch (role) {
+      case 'superadmin':
       case 'admin':
         return 'destructive';
       case 'editor':
@@ -262,6 +263,8 @@ const Admin: React.FC = () => {
 
   const getRoleLabel = (role: string | null) => {
     switch (role) {
+      case 'superadmin':
+        return 'Superadmin';
       case 'admin':
         return 'Administrador';
       case 'editor':
@@ -489,7 +492,7 @@ const Admin: React.FC = () => {
               <Label htmlFor="role">Rol</Label>
               <Select
                 value={newUser.role}
-                onValueChange={(value: 'admin' | 'editor' | 'viewer') => 
+                onValueChange={(value: 'superadmin' | 'admin' | 'editor' | 'viewer') => 
                   setNewUser({ ...newUser, role: value })
                 }
               >
@@ -512,7 +515,13 @@ const Admin: React.FC = () => {
                   <SelectItem value="admin">
                     <div className="flex items-center gap-2">
                       <span>👑</span>
-                      <span>Admin - Control total</span>
+                      <span>Admin - Control total familiar</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="superadmin">
+                    <div className="flex items-center gap-2">
+                      <span>⚡</span>
+                      <span>Superadmin - Puede borrar recuerdos</span>
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -559,7 +568,7 @@ const Admin: React.FC = () => {
           <div className="py-4">
             <Select
               value={newRole}
-              onValueChange={(value: 'admin' | 'editor' | 'viewer') => setNewRole(value)}
+              onValueChange={(value: 'superadmin' | 'admin' | 'editor' | 'viewer') => setNewRole(value)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -568,6 +577,7 @@ const Admin: React.FC = () => {
                 <SelectItem value="viewer">Visitante</SelectItem>
                 <SelectItem value="editor">Editor</SelectItem>
                 <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="superadmin">Superadmin</SelectItem>
               </SelectContent>
             </Select>
           </div>

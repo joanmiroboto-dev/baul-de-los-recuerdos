@@ -39,7 +39,7 @@ interface EditMemoryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (updatedMemory: Memory, newTagIds: string[]) => void;
-  isAdmin?: boolean;
+  canDelete?: boolean;
   onDelete?: () => void;
 }
 
@@ -49,7 +49,7 @@ const EditMemoryDialog: React.FC<EditMemoryDialogProps> = ({
   open,
   onOpenChange,
   onSave,
-  isAdmin = false,
+  canDelete = false,
   onDelete,
 }) => {
   const { toast } = useToast();
@@ -259,7 +259,7 @@ const EditMemoryDialog: React.FC<EditMemoryDialogProps> = ({
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2">
-          {isAdmin && (
+          {canDelete && (
             <Button
               variant="destructive"
               onClick={() => setShowDeleteConfirm(true)}
