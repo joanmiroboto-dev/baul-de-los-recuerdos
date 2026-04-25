@@ -43,7 +43,7 @@ interface CommentWithProfile extends Comment {
 const MemoryDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, userRole } = useAuth();
   const { toast } = useToast();
   
   const [memory, setMemory] = useState<Memory | null>(null);
@@ -53,7 +53,6 @@ const MemoryDetail: React.FC = () => {
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
 
   const [editMemoryOpen, setEditMemoryOpen] = useState(false);
   const [editCommentOpen, setEditCommentOpen] = useState(false);
@@ -94,20 +93,7 @@ const MemoryDetail: React.FC = () => {
     }
   }, [audioError, toast]);
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      if (!user) return;
-      const { data } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-      if (data) {
-        setUserRole(data.role);
-      }
-    };
-    fetchUserRole();
-  }, [user]);
+
 
   useEffect(() => {
     const fetchData = async () => {

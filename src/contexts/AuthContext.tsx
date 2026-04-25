@@ -26,20 +26,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', userId)
-        .maybeSingle();
+        .eq('user_id', userId);
 
       if (error) {
-        // Log the error for debugging, pero no bloqueamos: app familiar privada
-        console.warn('No se pudo leer user_roles, usando admin por defecto:', error.message);
+        console.warn('Error fetching user roles, defaulting to admin:', error.message);
         setUserRole('admin');
         return;
       }
 
-      // Si hay dato lo usamos, sino asumimos admin (app familiar privada)
-      setUserRole((data?.role as UserRole) ?? 'admin');
+      if (!data || data.length === 0) {
+        setUserRole('admin'); // Default for family app
+        return;
+      }
+
+      // Definir jerarquía
+      const hierarchy: Record<string, number> = {
+        'superadmin': 4,
+        'admin': 3,
+        'editor': 2,
+        'viewer': 1
+      };
+
+      // Quedarnos con el rol más alto
+      const roles = data.map(r => r.role as string);
+      const topRole = roles.reduce((prev, curr) => 
+        (hierarchy[curr] || 0) > (hierarchy[prev] || 0) ? curr : prev
+      , 'viewer');
+
+      setUserRole(topRole as UserRole);
     } catch (err) {
-      console.warn('Error en fetchUserRole, usando admin por defecto:', err);
+      console.warn('Fatal error in fetchUserRole, defaulting to admin:', err);
       setUserRole('admin');
     }
   };
