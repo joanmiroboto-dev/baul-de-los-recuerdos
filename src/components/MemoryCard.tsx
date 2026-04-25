@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -15,6 +16,7 @@ interface MemoryCardProps {
 
 export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, variant, className }) => {
   const navigate = useNavigate();
+  const [imgError, setImgError] = useState(false);
 
   const getMemoryTypeIcon = () => {
     switch (memory.memory_type) {
@@ -71,12 +73,26 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, variant, classNa
                <div className="absolute inset-0 bg-white/5 backdrop-blur-xl" />
                <span className="text-2xl z-10">🔒</span>
             </div>
-          ) : memory.thumbnail_url ? (
-            <img 
-              src={memory.thumbnail_url} 
-              alt={memory.title}
-              className="w-full h-full object-cover sepia-[.40] contrast-[1.10] brightness-90 saturate-[.85]"
-            />
+          ) : (memory.thumbnail_url || memory.file_url) ? (
+            memory.memory_type === 'video' ? (
+              <video 
+                src={memory.thumbnail_url || memory.file_url}
+                className="w-full h-full object-cover sepia-[.40] contrast-[1.10] brightness-90 saturate-[.85]"
+                muted
+                playsInline
+                onMouseEnter={(e) => e.currentTarget.play()}
+                onMouseLeave={(e) => {
+                  e.currentTarget.pause();
+                  e.currentTarget.currentTime = 0;
+                }}
+              />
+            ) : (
+              <img 
+                src={memory.thumbnail_url || memory.file_url} 
+                alt={memory.title}
+                className="w-full h-full object-cover sepia-[.40] contrast-[1.10] brightness-90 saturate-[.85]"
+              />
+            )
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
               {getMemoryTypeIcon()}
@@ -145,14 +161,29 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, variant, classNa
               </p>
             </div>
           </div>
-        ) : memory.thumbnail_url ? (
-          <img 
-            src={memory.thumbnail_url} 
-            alt={memory.title}
-            onContextMenu={(e) => e.preventDefault()}
-            onDragStart={(e) => e.preventDefault()}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 sepia-[.35] contrast-[1.15] brightness-[0.85] saturate-[.80] select-none pointer-events-none"
-          />
+        ) : (memory.thumbnail_url || memory.file_url) ? (
+          memory.memory_type === 'video' ? (
+            <video 
+              src={memory.thumbnail_url || memory.file_url}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 sepia-[.35] contrast-[1.15] brightness-[0.85] saturate-[.80] select-none pointer-events-none"
+              muted
+              playsInline
+              loop
+              onMouseEnter={(e) => e.currentTarget.play()}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0;
+              }}
+            />
+          ) : (
+            <img 
+              src={memory.thumbnail_url || memory.file_url} 
+              alt={memory.title}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 sepia-[.35] contrast-[1.15] brightness-[0.85] saturate-[.80] select-none pointer-events-none"
+            />
+          )
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
             {getMemoryTypeIcon()}

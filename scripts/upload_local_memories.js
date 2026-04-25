@@ -125,6 +125,7 @@ async function uploadFiles() {
           title: title,
           description: `Recuerdo importado de Drive (${file})`,
           file_url: fileUrl,
+          thumbnail_url: fileUrl, // Usamos el mismo URL para el preview
           memory_type: type,
           memory_date: date,
           // user_id lo dejamos nulo o podrías asignar uno si tenés el ID del admin

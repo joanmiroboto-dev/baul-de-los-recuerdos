@@ -58,6 +58,7 @@ const MemoryDetail: React.FC = () => {
   const [editMemoryOpen, setEditMemoryOpen] = useState(false);
   const [editCommentOpen, setEditCommentOpen] = useState(false);
   const [commentToEdit, setCommentToEdit] = useState<CommentWithProfile | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   const { 
     isRecording, 
@@ -396,13 +397,21 @@ const MemoryDetail: React.FC = () => {
             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent z-10" />
             
             {memory.memory_type === 'image' && (
-              <img
-                src={memory.file_url}
-                alt={memory.title}
-                onContextMenu={(e) => e.preventDefault()}
-                onDragStart={(e) => e.preventDefault()}
-                className="w-full max-h-[70vh] object-contain bg-muted select-none"
-              />
+              imgError ? (
+                <div className="w-full h-[50vh] bg-muted flex flex-col items-center justify-center text-muted-foreground">
+                  <Image className="w-16 h-16 mb-4 opacity-50" />
+                  <p>La imagen no está disponible</p>
+                </div>
+              ) : (
+                <img
+                  src={memory.file_url}
+                  alt={memory.title}
+                  onError={() => setImgError(true)}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                  className="w-full max-h-[70vh] object-contain bg-muted select-none"
+                />
+              )
             )}
             {memory.memory_type === 'video' && (
               <video

@@ -217,11 +217,20 @@ const Timeline: React.FC = () => {
                               {/* Thumbnail */}
                               <div className="w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 bg-muted relative overflow-hidden">
                                 {memory.thumbnail_url ? (
-                                  <img 
-                                    src={memory.thumbnail_url} 
-                                    alt={memory.title}
-                                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                                  />
+                                  <>
+                                    <img 
+                                      src={memory.thumbnail_url} 
+                                      alt={memory.title}
+                                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110 relative z-10"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                        e.currentTarget.parentElement?.querySelector('.fallback-icon')?.classList.remove('hidden');
+                                      }}
+                                    />
+                                    <div className="fallback-icon hidden absolute inset-0 w-full h-full flex items-center justify-center text-muted-foreground">
+                                      {getMemoryTypeIcon(memory.memory_type)}
+                                    </div>
+                                  </>
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                                     {getMemoryTypeIcon(memory.memory_type)}
